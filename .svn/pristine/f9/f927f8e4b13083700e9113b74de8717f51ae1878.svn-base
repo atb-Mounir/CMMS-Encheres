@@ -1,0 +1,16 @@
+package org.encheres.dal;
+
+/**
+ * Codes de gestion des erreurs de la DAL compris entre 10000 et 19999
+ */
+public abstract class CodesResultatDAL {
+	/**
+	 * Echec général quand tentative d'insérer un objet null
+	 */
+	public static final int INSERT_OBJET_NULL=10000;
+	public static final int INSERT_UTILISATEUR_NULL=10001;
+	public static final int INSERT_UTILISATEUR_ECHEC=10002;
+	
+	
+
+}

@@ -1,0 +1,241 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Article;
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Enchere;
+import org.encheres.bo.Utilisateur;
+import org.encheres.message.CodesResultat;
+
+/**
+ * Classe en charge de
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 24 janv. 2020 - 13:01:34
+ */
+public class AccueilDAOJdbcImpl implements AccueilDAO {
+
+	private static final String TOUTES_LES_ENCHERES="SELECT ut.no_utilisateur, ut.pseudo, ut.nom, ut.prenom,"
+			+ "ut.email,ut.telephone,ut.rue,ut.code_postal,ut.ville,ut.mot_de_passe,ut.credit,ut.administrateur,\r\n" + 
+			"e.date_enchere, e.montant_enchere, cat.no_categorie, cat.libelle, art.no_article, art.nom_article, "
+			+ "art.description, art.date_debut_encheres,\r\n" + 
+			"art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_vendeur, art.no_categorie FROM ARTICLES_VENDUS art\r\n" + 
+			"JOIN ENCHERES e ON art.no_article=e.no_article JOIN UTILISATEURS ut ON ut.no_utilisateur=art.no_vendeur JOIN CATEGORIES cat\r\n" + 
+			"ON art.no_categorie=cat.no_categorie";
+
+	
+
+
+	/*DEBUT MODELE POUR LES REQUETES*/
+	@Override
+	public List<Article> toutesLesEncheresOuvertes() throws BusinessException {
+		List<Article> toutesLesEncheresOuvertes = new ArrayList<Article>();
+		
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			/*Ajouter à TOUTES_LES_ENCHERES la restriction de la requête spécifique*/
+			PreparedStatement pstmt = cnx.prepareStatement(TOUTES_LES_ENCHERES+" WHERE date_fin_encheres > GETDATE() ORDER BY e.montant_enchere DESC;");
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			return toutesLesEncheresOuvertes=creationArticle(rs);
+				
+				
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			/*Créer un code erreur*/
+			businessException.ajouterErreur(CodesResultat.LECTURE_LISTES_ECHEC);
+			throw businessException;
+		}
+		
+	}
+	/*FIN DE MODELE*/
+
+
+	private List<Article> creationArticle(ResultSet rs) throws SQLException {
+		List<Article> toutesLesEncheresOuvertes = new ArrayList<Article>();
+		int noArticleDejaPresent;
+		while(rs.next())
+		{
+		String libelleCategorie=rs.getString(16);
+		int noCategorie=rs.getInt(15);
+		
+		Categorie categorie=new Categorie(noCategorie, libelleCategorie);
+		
+		int noUtilisateur=rs.getInt(1);
+		String pseudo=rs.getString(2);
+		String nom=rs.getString(3);
+		String prenom=rs.getString(4);
+		String email=rs.getString(5);
+		String telephone=rs.getString(6);
+		String rue=rs.getString(7);
+		String cp=rs.getString(8);
+		String ville=rs.getString(9);
+		String motDePasse=rs.getString(10);
+		int credit=rs.getInt(11);
+		boolean administrateur=(rs.getByte(12)!=0);
+		Utilisateur utilisateur=new Utilisateur(noUtilisateur,pseudo, nom, prenom, email, telephone, rue,
+				cp, ville, motDePasse, credit, administrateur); 
+		
+		int montantEnchere=rs.getInt(14);
+		LocalDate dateEnchere=rs.getDate(13).toLocalDate();
+		Enchere enchere=new Enchere(dateEnchere,montantEnchere);
+		
+		int noArticle=rs.getInt(17);
+		String nomArticle=rs.getString(18);
+		String description=rs.getString(19);
+		LocalDate dateDebutEncheres=rs.getDate(20).toLocalDate();
+		LocalDate dateFinEncheres=rs.getDate(21).toLocalDate();
+		int prixInitial=rs.getInt(22);
+		int prixVente=rs.getInt(23);
+		int noVendeur=rs.getInt(24);
+		int noCategorieArt=rs.getInt(25);
+		
+		Article article= new Article(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres,
+				prixInitial, prixVente, categorie, enchere, utilisateur);
+
+		noArticleDejaPresent=0;
+		for(Article art : toutesLesEncheresOuvertes) {
+			if(art.getNoArticle()==article.getNoArticle()) {
+				noArticleDejaPresent++;
+			}
+		}
+		/*Si  l'article n'existe pas, on l'ajoute*/
+		if(noArticleDejaPresent==0) {
+		toutesLesEncheresOuvertes.add(article);
+		}
+		
+	}
+		return toutesLesEncheresOuvertes;
+	}
+
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.AccueilDAO#mesEncheresOuvertes()
+	 */
+	@Override
+	public List<Article> mesEncheresOuvertes() throws BusinessException {
+		List<Article> mesEncheresOuvertes = new ArrayList<Article>();
+		int noArticleDejaPresent;
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			PreparedStatement pstmt = cnx.prepareStatement(TOUTES_LES_ENCHERES);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next())
+			{
+				
+				
+				String libelleCategorie=rs.getString(16);
+				int noCategorie=rs.getInt(15);
+				
+				Categorie categorie=new Categorie(noCategorie, libelleCategorie);
+				
+				int noUtilisateur=rs.getInt(1);
+				String pseudo=rs.getString(2);
+				String nom=rs.getString(3);
+				String prenom=rs.getString(4);
+				String email=rs.getString(5);
+				String telephone=rs.getString(6);
+				String rue=rs.getString(7);
+				String cp=rs.getString(8);
+				String ville=rs.getString(9);
+				String motDePasse=rs.getString(10);
+				int credit=rs.getInt(11);
+				boolean administrateur=(rs.getByte(12)!=0);
+				Utilisateur utilisateur=new Utilisateur(noUtilisateur,pseudo, nom, prenom, email, telephone, rue,
+						cp, ville, motDePasse, credit, administrateur); 
+				
+				int montantEnchere=rs.getInt(14);
+				LocalDate dateEnchere=rs.getDate(13).toLocalDate();
+				Enchere enchere=new Enchere(dateEnchere,montantEnchere);
+				
+				int noArticle=rs.getInt(17);
+				String nomArticle=rs.getString(18);
+				String description=rs.getString(19);
+				LocalDate dateDebutEncheres=rs.getDate(20).toLocalDate();
+				LocalDate dateFinEncheres=rs.getDate(21).toLocalDate();
+				int prixInitial=rs.getInt(22);
+				int prixVente=rs.getInt(23);
+				int noVendeur=rs.getInt(24);
+				int noCategorieArt=rs.getInt(25);
+				
+				Article article=new Article(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres,
+						prixInitial, prixVente, categorie, enchere, utilisateur);
+				
+				/*On verifie si l'article existe deja*/
+				noArticleDejaPresent=0;
+				for(Article art : mesEncheresOuvertes) {
+					if(art.getNoArticle()==article.getNoArticle()) {
+						noArticleDejaPresent++;
+					}
+				}
+				/*Si  l'article n'existe pas, on l'ajoute*/
+				if(noArticleDejaPresent==0) {
+					mesEncheresOuvertes.add(article);
+				}
+				
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultat.LECTURE_LISTES_ECHEC);
+			throw businessException;
+		}
+		return mesEncheresOuvertes;
+	}
+
+	/**
+	 *@throws BusinessException 
+	 * @(inheritDoc) 
+	 * @see org.encheres.dal.AccueilDAO#affichageParCategorie(java.lang.String)
+	 */
+	@Override
+	public List<Article> affichageParCategorie(String libelleCategorie) throws BusinessException {
+		List<Article> toutesLesEncheresParCategorie = new ArrayList<Article>();
+		
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			cnx.setAutoCommit(false);
+			PreparedStatement pstmt;
+			ResultSet rs;
+			pstmt = cnx.prepareStatement(TOUTES_LES_ENCHERES+" WHERE cat.libelle=?");
+			pstmt.setString(1, libelleCategorie);
+			
+			rs=pstmt.executeQuery();
+			while(rs.next())
+			{
+				Article article=creationArticle(rs);
+				
+				toutesLesEncheresParCategorie.add(article);
+			}
+			rs.close();
+			pstmt.close();
+			cnx.commit();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultat.LECTURE_LISTES_ECHEC);
+			throw businessException;
+		}
+		return toutesLesEncheresParCategorie;
+	}
+
+}

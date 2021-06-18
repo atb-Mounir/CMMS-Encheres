@@ -1,0 +1,155 @@
+package org.encheres.servlets;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.encheres.BusinessException;
+import org.encheres.bll.BLLFactory;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
+/**
+ * Servlet implementation class NouvelleVente
+ */
+@WebServlet("/NouvelleVente")
+public class NouvelleVente extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public NouvelleVente() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    
+    /**
+     * Méthode pour rediriger vers la servlet d'accueil
+     * Methode en charge de récupérer la liste des énumérations pour l'utiliser dans la jsp
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void redirection(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    		try {
+				request.setAttribute("categories", BLLFactory.getCategoriesLL().listeCategories());
+			} catch (BusinessException e) {
+	    		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/nouvelleVente.jsp");
+				rd.forward(request, response);
+			}
+    		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/nouvelleVente.jsp");
+			rd.forward(request, response);
+    }
+     
+    
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		redirection(request,response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("je suis dans la Servlet NouvelleVente en Post");
+		request.setCharacterEncoding("UTF-8");
+		
+		//(request.getParameterValues("Enregistrer") POUR LE BOUTON ENREGISTRER
+		
+		//Création d'une liste de code d'erreur
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		String nomArticle = request.getParameter("nomArticle");
+		String description = request.getParameter("description");
+		String categorieString = request.getParameter("categorie");
+		String miseAPrixString = request.getParameter("miseAPrix");
+		String dateDebutEnchereString = request.getParameter("dateDebutEnchere");
+		String dateFinEnchereString = request.getParameter("dateFinEnchere");
+		String retraitRue = request.getParameter("retraitRue");
+		String retraitCP = request.getParameter("retraitCP");
+		String retraitVille = request.getParameter("retraitVille");
+		
+		verificationParsing(listeCodesErreur, categorieString, miseAPrixString, dateDebutEnchereString,
+				dateFinEnchereString);
+		
+	
+		
+		
+		
+		
+		
+	
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	private void verificationParsing(List<Integer> listeCodesErreur, String categorieString, String miseAPrixString,
+			String dateDebutEnchereString, String dateFinEnchereString) {
+		//Categorie parsée en int
+		int categorie;
+		try {
+			categorie = Integer.parseInt(categorieString);	
+		}
+		catch (ParseException e) {
+		e.printStackTrace();
+		listeCodesErreur.add(CodesResultatServlets.FORMAT_NOUVELLE_VENTE_CATEGORIE_ERREUR);
+		}
+
+		//Categorie parsée en int
+		int prixInit;
+		try {
+			prixInit = Integer.parseInt(miseAPrixString);	
+		}
+		catch (ParseException e) {
+		e.printStackTrace();
+		listeCodesErreur.add(CodesResultatServlets.FORMAT_NOUVELLE_VENTE_MISE_A_PRIX_ERREUR);
+		}
+		
+		//Initialisation des variables de dates en LocalDate
+		LocalDate dateDebutEnchere=null;
+		LocalDate dateFinEnchere=null;
+		//Vérification et parsing des paramètres Date String en type Localdate
+		try{
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			dateDebutEnchere = LocalDate.parse(dateDebutEnchereString, dtf);
+			dateFinEnchere = LocalDate.parse(dateFinEnchereString, dtf);
+		}
+		catch(DateTimeParseException e)
+		{
+			e.printStackTrace();
+			listeCodesErreur.add((CodesResultatServlets.FORMAT_NOUVELLE_VENTE_DATE_ERREUR));
+		}
+	}
+
+		
+}	
+		
+	
+		//requets.getparameter de chque entrée
+		//appel à la BLL factory .getArticleBLL pour récupérer article manager dans une var
+		// var.methode du manager
+		//<Redirection vers la JSP souhaitée
+		
+	
+
+

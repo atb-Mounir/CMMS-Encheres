@@ -1,0 +1,119 @@
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="java.util.Locale.Category"%>
+<%@ include file="../fragments/head.jsp"%>
+
+<body>
+
+	<div class="container-fluid">
+	<%@ include file="../fragments/nav.jsp"%>
+<h1>Liste des encheres</h1>
+
+<h2>Filtre</h2>
+
+<form method="post" action="${pageContext.request.contextPath}/Accueil">
+	<!-- barre de recherche -->
+	<nav class="navbar navbar-light bg-light">
+		<input class="form-control mr-sm-2" type="search"
+			placeholder="rechercher" aria-label="rechercher">
+	</nav>
+	<!-- Liste des cat�gories -->
+	<select name="categorie">
+		<c:forEach items="${categories}" var="categorie">
+			<option>${categorie.libelleCategorie}</option>
+		</c:forEach>
+	</select>
+	<input type="submit" class="btn btn-primary btn-lg" value="Rechercher">
+
+
+
+<!-- Bloc pour afficher le menu achat ou vente si l'utilisateur est connecté -->
+<c:if test="${etatConnexion!=null}">
+<!-- Bloc achats -->
+<div class="form-check form-check-inline">
+	<input class="form-check-input" name="achatVente" type="radio" id="achats" value="achats" checked=checked onclick="achatFunction()">
+	<label class="form-check-label" for="inlineCheckbox1">Achats</label>
+	
+	<div class="form-check">
+		<input class="form-check-input" name="choixAchat" type="radio" id="ouvert"> 
+		<label class="form-check-label" for="ouvert"> encheres ouvertes</label><br /> 
+		<input class="form-check-input" name="choixAchat" type="radio" id="enCours"> 
+		<label class="form-check-label" for="enCours"> Mes encheres en cours</label><br />
+		<input class="form-check-input" name="choixAchat" type="radio" id="remporte"> 
+		<label class="form-check-label" for="remporte"> Mes encheres remportees</label>
+	</div>
+</div>
+
+<!-- Bloc ventes -->
+<div class="form-check form-check-inline">
+	<input class="form-check-input" name="achatVente" type="radio" id="ventes" value="ventes" onclick="venteFunction()"> 
+	<label class="form-check-label" for="inlineCheckbox2">Mes ventes</label>
+
+
+
+	<div class="form-check">
+		<input class="form-check-input" name="choixVente" type="radio" id="venteEnCours"> 
+		<label class="form-check-label" for="venteEnCours"> Mes ventes en cours</label><br /> 
+		<input class="form-check-input" name="choixVente" type="radio" id="venteNonDebutees"> 
+		<label class="form-check-label"	for="venteNonDebutees"> Ventes non débutees</label><br /> 
+		<input class="form-check-input" name="choixVente" type="radio" id="venteTerminee"> 
+		<label class="form-check-label"	for="venteTerminee"> Ventes terminees</label>
+	</div>
+</div>
+</form>
+</c:if>
+	<c:forEach items="${listeEncheresOuvertes}"	var="article">
+		<div class="container mt-5">
+			<div class="row">
+				<div class="col">
+					<div class="card" style="width: 18rem;">
+							
+								<img class="card-img-top" src="${pageContext.request.contextPath}/img/chateau.jpg" alt="Card image cap">
+								<h5 class="card-title" style="text-transform: uppercase;">${article.nomArticle}</h5>
+								<p class="card-text">Prix : ${article.enchere.montantEnchere} points</p>
+								<p class="card-text">Fin de l'enchere : ${article.dateFinEncheres} </p>
+								<p class="card-text">Vendeur : ${article.utilisateur.pseudo} </p>
+								<a href="<%=request.getContextPath() %>/DetailVente?no_article=${article.noArticle}" class="btn btn-primary">Voir Article</a>
+								<br/>
+							
+					</div>
+				</div>
+			</div>
+		</div>
+		</c:forEach>
+
+
+
+
+<script type="text/javascript" charset="UTF-8">
+	achatFunction();
+
+	function venteFunction() {
+		document.getElementById("ouvert").disabled = true;
+		document.getElementById("enCours").disabled = true;
+		document.getElementById("remporte").disabled = true;
+		document.getElementById("venteEnCours").disabled = false;
+		document.getElementById("venteNonDebutees").disabled = false;
+		document.getElementById("venteTerminee").disabled = false;
+		document.getElementById("ouvert").checked = false;
+		document.getElementById("enCours").checked = false;
+		document.getElementById("remporte").checked = false;
+	}
+
+	function achatFunction() {
+		document.getElementById("ouvert").disabled = false;
+		document.getElementById("enCours").disabled = false;
+		document.getElementById("remporte").disabled = false;
+		document.getElementById("venteEnCours").disabled = true;
+		document.getElementById("venteNonDebutees").disabled = true;
+		document.getElementById("venteTerminee").disabled = true;
+		document.getElementById("venteEnCours").checked = false;
+		document.getElementById("venteNonDebutees").checked = false;
+		document.getElementById("venteTerminee").checked = false;
+	}
+</script>
+
+<%@ include file="../fragments/footer.jsp"%>
+<%@ include file="../fragments/script.jsp"%>
+
+</body>
+</html>

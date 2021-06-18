@@ -1,0 +1,99 @@
+package org.encheres.servlets;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.encheres.BusinessException;
+import org.encheres.bll.ArticleBLL;
+import org.encheres.bll.ArticleManager;
+import org.encheres.bll.BLLFactory;
+import org.encheres.bo.Article;
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Retrait;
+import org.encheres.bo.Utilisateur;
+
+
+
+/**
+ * Servlet implementation class DetailVente
+ */
+@WebServlet(description = "servlet qui redirige vers la jsp detailVente.jsp", urlPatterns = { "/DetailVente" })
+public class DetailVente extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DetailVente() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see Servlet#init(ServletConfig)
+	 */
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/detailVente.jsp");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ArticleBLL articleManager =  BLLFactory.getArticleBLL();
+		//je récupère le no_article envoyé par la jspAccueil qui veut afficher le détail de l'article séléctionner
+				String no_article=request.getParameter("no_article");
+		Article article = articleManager.selectArticleById(no_article);
+		request.setAttribute("article", article);
+		
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/detailVente.jsp");
+		rd.forward(request, response);
+		
+		
+//		//Je nomme les index de la superListe pour bien repérer la positions des listes quand on les récupères.
+//				int indexArticle = 0;
+//				int indexUtilisateur=1;
+//				int indexCategorie=2;
+//				int indexRetrait=3;
+//		articleManager.selectArticleById(no_article);
+//		List<List<Object>> superList = new ArrayList<List<Object>>();
+//		List<Object> listeArticle = new ArrayList<Object>();
+//		List<Object> listeUtilisateur = new ArrayList<Object>();
+//		List<Object> listeCategorie = new ArrayList<Object>();
+//		List<Object> listeRetrait = new ArrayList<Object>();
+//		
+//			superList = articleManager.afficherDetailVente(nomArticle);
+//			listeArticle = articleManager.afficherDetailVente(nomArticle).get(indexArticle); 
+//			listeUtilisateur = articleManager.afficherDetailVente(nomArticle).get(indexUtilisateur); 
+//			listeCategorie = articleManager.afficherDetailVente(nomArticle).get(indexCategorie); 
+//			listeRetrait = articleManager.afficherDetailVente(nomArticle).get(indexRetrait); 
+//
+//			request.setAttribute("superListe", superList);
+//			request.setAttribute("listeArticle", listeArticle);
+//			request.setAttribute("listeCategorie", listeCategorie);
+//			request.setAttribute("listeRetrait", listeRetrait);
+//			request.setAttribute("listeUtilisateur", listeUtilisateur);
+			
+			
+					
+		
+	}
+
+}

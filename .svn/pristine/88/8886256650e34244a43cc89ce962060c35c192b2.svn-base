@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+
+public class DAOFactory {
+	
+	public static ArticleDAO getArticleDAO()
+	{
+		
+		System.out.println("je suis c dans DAOFactory");
+		return new ArticleDAOJdbcImpl();
+	}
+	
+	
+	public static UtilisateurDAO getUtilisateurDAO()
+	{
+		return new UtilisateurDAOJdbcImpl();
+	}
+	
+	public static CategorieDAO getCategories()
+	{
+		return new CategorieDAOJdbcImpl();
+	}
+	
+	
+}

@@ -1,0 +1,21 @@
+/**
+ * 
+ */
+package org.encheres.message;
+
+/**
+ * Classe en charge
+ * @author maitbaha2019
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 13:12:58
+ */
+public abstract class CodesResultat {
+
+	/**
+	 * Constructeur
+	 */
+	public CodesResultat() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

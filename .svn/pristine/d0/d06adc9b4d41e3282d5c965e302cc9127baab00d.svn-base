@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+/**
+ * Classe en charge de
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:21:58
+ */
+public interface ArticleDAO {
+
+}

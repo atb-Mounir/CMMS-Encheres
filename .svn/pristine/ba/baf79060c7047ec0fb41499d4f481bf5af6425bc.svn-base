@@ -1,0 +1,84 @@
+ /**
+ * 
+ */
+package org.encheres.dal;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Article;
+import org.encheres.bo.Enchere;
+import org.encheres.bo.Utilisateur;
+
+/**
+ * Classe en charge
+ * @author maitbaha2019
+ * @version EncheresCMM - V1.0
+ * @date 24 janv. 2020 - 15:37:43
+ */
+public class EnchereDAOJdbcImpl implements EnchereDAO {
+	
+	private static final String INSERT_ENCHERE = "insert into ENCHERES (no_acheteur,no_article,date_enchere,montant_enchere) values (?,?,?,?)";
+
+
+	/*
+	 * @{inherite code}
+	 * @see org.encheres.dal.EnchereDAO#insertEnchere(org.encheres.bo.Utilisateur, org.encheres.bo.Article, org.encheres.bo.Enchere, org.encheres.bo.Enchere)
+	 */
+	@Override
+	public void insertEnchere(Enchere enchere) {
+		System.out.println("Je suis dans InsererEncher");
+		System.out.println("Je suis dans insertEncher et le montant est null");
+			try(Connection cnx = ConnectionProvider.getConnection()) {
+				{
+					try {
+				System.out.println("J'ai fais la connexion");
+				cnx.setAutoCommit(false);//annule la transaction si toutes les données ne sont pas présentes
+				PreparedStatement pstmt;
+				ResultSet rs;
+				pstmt = cnx.prepareStatement(INSERT_ENCHERE, PreparedStatement.RETURN_GENERATED_KEYS);
+				System.out.println("voici la GENERATED KEY "+PreparedStatement.RETURN_GENERATED_KEYS);
+				System.out.println("J'ai fais le pstmt dans JDBCEnchere");
+				pstmt.setInt(1,enchere.getUtilisateur().getNoUtilisateur());
+				System.out.println("j'ai inserer le noUtilisateur");
+				pstmt.setInt(2, enchere.getArticle().getNoArticle());
+				System.out.println("j'ai inserer le noArticle");
+				pstmt.setDate(3,java.sql.Date.valueOf(enchere.getDateEnchere()) );
+				System.out.println("j'ai inserer la dateEnchere");
+				pstmt.setInt(4,enchere.getMontantEnchere());
+				System.out.println("j'ai inserer le montantEnchere");
+				
+				pstmt.executeUpdate();
+				System.out.println("J'ai passé l'execute");
+				rs = pstmt.getGeneratedKeys();
+				System.out.println("J'ai passé le rs");
+			} catch(Exception e) {
+				e.printStackTrace();
+				try {
+					cnx.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					throw e;
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+			} catch (SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+	}
+}
+
+
+

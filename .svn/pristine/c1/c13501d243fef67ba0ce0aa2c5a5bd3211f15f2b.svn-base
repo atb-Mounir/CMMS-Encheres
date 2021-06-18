@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+/**
+ * Classe en  charge de récupérer les informations des différents manager
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 22 janv. 2020 - 14:22:30.
+ */
+public class BLLFactory {
+	
+	public static ArticleBLL getArticleBLL()
+	{
+		return new ArticleManager();
+	}
+	
+	
+	public static UtilisateurManager getUtilisateurBLL()
+	{
+		return new UtilisateurManager();
+	}
+
+}

@@ -1,0 +1,26 @@
+package org.encheres.servlets;
+
+/**
+ * Les codes disponibles sont entre 30000 et 39999
+ */
+
+public abstract class CodesResultatServlets {
+	/**
+	 * Format NouvelleVente.date incorrect
+	 */
+	public static final int FORMAT_NOUVELLE_VENTE_DATE_ERREUR=30000;
+	
+	/**
+	 * Format NouvelleVente.categorie incorrect
+	 */
+	public static final int FORMAT_NOUVELLE_VENTE_CATEGORIE_ERREUR=30001;
+	
+	/**
+	 * Format NouvelleVente.mise à prix incorrect
+	 */
+	public static final int FORMAT_NOUVELLE_VENTE_MISE_A_PRIX_ERREUR=30002;
+	
+	
+	
+	
+}

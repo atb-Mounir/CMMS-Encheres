@@ -1,0 +1,25 @@
+<%@ include file="./WEB-INF/header.jsp"%>
+
+<h1 style="text-align:center">Mon profil</h1>
+
+
+<form action="${pageContext.request.contextPath}/NouvelleVente" method="post" 
+class="text-center border border-light p-5">
+
+    <div class="form-row mb-4">
+        <div class="col">
+            <label for="article" class="col-sm-4 col-form-label">Article:</label>
+            <input type="text" id="article" name="article" required>
+        </div>
+        <div class="col">
+            <label for="description" class="col-sm-4 col-form-label">Description:</label>
+			<textarea id="story" name="story" rows="5" cols="33">
+			</textarea>
+		</div>
+    </div>
+
+    
+</form>
+
+
+<%@ include file="./WEB-INF/footer.jsp"%>

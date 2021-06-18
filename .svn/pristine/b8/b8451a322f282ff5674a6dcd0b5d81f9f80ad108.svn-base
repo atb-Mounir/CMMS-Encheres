@@ -1,0 +1,142 @@
+package org.encheres.servlets;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.encheres.bll.ArticleManager;
+import org.encheres.bll.BLLFactory;
+
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Utilisateur;
+import org.encheres.BusinessException;
+import org.encheres.bll.BLLFactory;
+
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
+/**
+ * Servlet implementation class NouvelleVente
+ */
+@WebServlet("/NouvelleVente")
+public class NouvelleVente extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public NouvelleVente() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    
+    /**
+     * Méthode pour rediriger vers la servlet d'accueil
+     * Methode en charge de récupérer la liste des énumérations pour l'utiliser dans la jsp
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void redirection(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    		try {
+				request.setAttribute("categories", BLLFactory.getCategoriesLL().listeCategories());
+			} catch (BusinessException e) {
+	    		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/nouvelleVente.jsp");
+				rd.forward(request, response);
+			}
+    		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/nouvelleVente.jsp");
+			rd.forward(request, response);
+    }
+     
+    
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		redirection(request,response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		System.out.println("je suis dans la Servlet NouvelleVente en Post");
+//		request.setCharacterEncoding("UTF-8");
+//		String nomArticle = request.getParameter("nomArticle");
+//		System.out.println("le paramètre enregistré est "+nomArticle);
+//		String dateDebutEnchereString = request.getParameter("dateDebutEnchere");
+//		System.out.println(dateDebutEnchereString);
+//		TestManager testManager = BLLFactory.getArticleTestBLL();
+//		try {
+//			testManager.insererArticleTest(nomArticle);
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("je suis revenu dans la Servlet pour envoyer vers la page d'accueil");
+//		RequestDispatcher rd = request.getRequestDispatcher("/Accueil");
+//		rd.forward(request, response);
+		
+//		//(request.getParameterValues("Enregistrer") POUR LE BOUTON ENREGISTRER
+//		
+		System.out.println("je suis dans la Servlet NouvelleVente en Post");
+		//Création d'une liste de code d'erreur
+		List<Integer> listeCodesErreur = new ArrayList<>();
+		
+		
+		String nomArticle = request.getParameter("nomArticle");
+		String description = request.getParameter("description");
+		System.out.println("je suis avant la récupération de catégorie");
+		String categorieString = request.getParameter("categorie");
+		System.out.println("la categorie choisie est : "+categorieString);
+		System.out.println("je suis avant la la récupération du prix initial");
+		String miseAPrixString = request.getParameter("miseAPrix");
+		String dateDebutEnchereString = request.getParameter("dateDebutEnchere");
+		String dateFinEnchereString = request.getParameter("dateFinEnchere");
+		String retraitRue = request.getParameter("retraitRue");
+		String retraitCP = request.getParameter("retraitCP");
+		String retraitVille = request.getParameter("retraitVille");
+		int idUtilisateur = ((Utilisateur) request.getSession().getAttribute("newUtilisateur")).getNoUtilisateur();
+		
+	
+		System.out.println("tous les paramètres sont enregistrés dans des variables et parsées");
+		System.out.println("j'utilise la BLLFactory pour aller sur l'article Manager");
+		ArticleManager articleManager = BLLFactory.getArticleMBLL();
+		
+		try {
+			articleManager.EnregistrementNouvelleVente(nomArticle, description, categorieString, miseAPrixString, dateDebutEnchereString, dateFinEnchereString, retraitRue, retraitCP, retraitVille, idUtilisateur);
+		}catch (Exception e) {
+			e.printStackTrace();
+			listeCodesErreur.add((CodesResultatServlets.ENVOI_NOUVELLE_VENTE_A_ARTICLE_MANAGER_ERREUR));
+		}
+		RequestDispatcher rd = request.getRequestDispatcher("/Accueil");
+		rd.forward(request, response);
+		
+	
+	}
+
+
+
+		
+}	
+		
+	
+		//requets.getparameter de chque entrée
+		//appel à la BLL factory .getArticleBLL pour récupérer article manager dans une var
+		// var.methode du manager
+		//<Redirection vers la JSP souhaitée
+		
+	
+
+

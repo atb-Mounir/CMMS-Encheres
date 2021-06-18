@@ -1,0 +1,109 @@
+package org.encheres.servlets;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.encheres.BusinessException;
+import org.encheres.bll.ArticleBLL;
+import org.encheres.bll.ArticleManager;
+import org.encheres.bll.BLLFactory;
+import org.encheres.bll.EnchereBLL;
+import org.encheres.bll.EnchereManager;
+import org.encheres.bo.Article;
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Retrait;
+import org.encheres.bo.Utilisateur;
+
+
+
+/**
+ * Servlet implementation class DetailVente
+ */
+@WebServlet(description = "servlet qui redirige vers la jsp detailVente.jsp", urlPatterns = { "/DetailVente" })
+public class DetailVente extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DetailVente() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see Servlet#init(ServletConfig)
+	 */
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ArticleBLL articleManager =  BLLFactory.getArticleBLL();
+		//je récupère le no_article envoyé par la jspAccueil qui veut afficher le détail de l'article séléctionner
+				String no_article=request.getParameter("no_article");
+				Article article=articleManager.selectArticleById(no_article);
+
+				String libeleCategorie=article.getCategorie().getLibelleCategorie();
+				String nomArticleVendu=article.getNomArticle();
+				String descritpionArticleVendu=article.getDescription();
+				int meilleurOffre=article.getPrixVente();
+				int miseAprix=article.getMiseAPrix();
+				LocalDate dateFinEnchere=article.getDateFinEncheres();
+				String rueRetraitArticle=article.getRetrait().getRueRetrait();
+				String cPRetraitArticle=article.getRetrait().getCpRetrait();
+				String villeRetraitArticle=article.getRetrait().getVilleRetrait();
+				String pseudoVendeur=article.getUtilisateur().getPseudo();
+				String telephoneVendeur=article.getUtilisateur().getTelephone();
+				int credit = article.getUtilisateur().getCredit();
+		
+		request.setAttribute("NomCategorie",libeleCategorie );
+		request.setAttribute("nomArticleVendu", nomArticleVendu);
+		request.setAttribute("descritpionArticleVendu", descritpionArticleVendu);
+		request.setAttribute("meilleurOffre", meilleurOffre);
+		request.setAttribute("miseAprix", miseAprix);
+		request.setAttribute("dateFinEnchere", dateFinEnchere);
+		request.setAttribute("rueRetraitArticle", rueRetraitArticle);
+		request.setAttribute("cPRetraitArticle", cPRetraitArticle);
+		request.setAttribute("villeRetraitArticle", villeRetraitArticle);
+		request.setAttribute("pseudoVendeur", pseudoVendeur);
+		request.setAttribute("telephoneVendeur", telephoneVendeur);
+		request.setAttribute("credit", credit);
+		
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/detailVente.jsp");
+		rd.forward(request, response);
+		
+		
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+//		String montantEncherir = request.getParameter("montant_enchere");
+//		String noUtilisateur=request.;
+//		System.out.println("voici le montant de l'enchere dans le postServlet : "+montantEncherir);
+//		
+//		EnchereBLL enchereManager=BLLFactory.getEnchereBLL();
+//		
+//		enchereManager.insertEnchere(noUtilisateur, noArticle, dateEnchere, montant_enchere);
+		
+		//doGet(request, response);
+	}
+
+}

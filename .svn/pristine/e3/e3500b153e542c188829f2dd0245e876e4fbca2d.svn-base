@@ -1,0 +1,122 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import org.encheres.bo.Article;
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Enchere;
+import org.encheres.bo.Retrait;
+import org.encheres.bo.Utilisateur;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.encheres.BusinessException;
+/**
+ * Classe en charge de
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:22:20
+ */
+public class ArticleDAOJdbcImpl implements ArticleDAO {
+
+	private static final String INSERT_ARTICLE="INSERT INTO ARTICLES_VENDUS "
+			+ "(nom_article,description,"
+			+ "date_debut_encheres,date_fin_encheres,"
+			+ "prix_initial,prix_vente,"
+			+ "no_vendeur,no_categorie) "
+			+ "VALUES (?,?,?,?,?,?,?,?)";
+	
+	private static final String DETAIL_DE_VENTE = "SELECT nom_article,description, c.libelle as 'categorie', max(e.montant_enchere) as 'Meilleure offre', "
+			+ "date_fin_encheres,prix_initial, r.rue, r.code_postal, r.ville, u.pseudo, u.telephone"
+			+"FROM ARTICLES_VENDUS a" 
+			+"LEFT JOIN RETRAITS r ON a.no_vendeur=r.no_article"
+			+"JOIN UTILISATEURS u ON a.no_vendeur=u.no_utilisateur"
+			+"LEFT JOIN ENCHERES e ON u.no_utilisateur = e.no_acheteur"
+			+"JOIN CATEGORIES c ON a.no_categorie=c.no_categorie"
+			+"WHERE nom_article = '?'"
+			+"GROUP BY nom_article,description, c.libelle, e.montant_enchere,date_debut_encheres,date_fin_encheres,prix_initial, r.rue, r.code_postal, r.ville, u.pseudo, u.telephone";
+	
+	@Override
+	public void insertArticle(Article article) throws BusinessException {
+		if (article==null)
+		{
+			BusinessException businessException = new BusinessException();
+			businessException.afouterErreur(code);
+			
+		}
+		
+	}
+
+	@Override
+	public void insertRetrait(Retrait retrait) throws BusinessException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<List<Object>> selectByNomArticle(String nomArticle) {
+		
+		//Je crée une SuperListe qui englobe plusieurs liste de données récupérer dans la BDD avec selectByNomArticle()
+		List<List<Object>> superList = new ArrayList<List<Object>>();
+				
+		
+		List<Article> listeArticle = new ArrayList<Article>();
+		List<Categorie> listeCategorie = new ArrayList<Categorie>();
+		List<Retrait> listeRetrait = new ArrayList<Retrait>();
+		List<Utilisateur> listeUtilisateur = new ArrayList<Utilisateur>();
+
+		try (Connection cnx = ConnectionProvider.getConnection();
+			PreparedStatement rqt = cnx.prepareStatement(DETAIL_DE_VENTE);){
+			
+			rqt.setString(1, nomArticle);
+			try (ResultSet rs = rqt.executeQuery()){
+				Article art = null;
+				Categorie cat = null;
+				Retrait retr = null;
+				Utilisateur ut = null;
+				while (rs.next()) {
+					art = new Article(rs.getString("nom_article"), rs.getString("description"),
+							rs.getDate("date_debut_encheres").toLocalDate(),
+							rs.getDate("date_fin_encheres").toLocalDate(),
+							 rs.getInt("prix_initial"),rs.getInt("montant_enchere"));
+					cat = new Categorie(rs.getString("libelle"));
+					retr = new Retrait(rs.getString("rue"),rs.getString("code_postal"),rs.getString("ville"));
+					ut = new Utilisateur(rs.getString("pseudo"),rs.getString("telephone"));
+		//J'inser les nouveaux Objet dans la liste correspondante			
+					listeArticle.add(art);
+					listeCategorie.add( cat);
+					listeRetrait.add(retr);
+					listeUtilisateur.add(ut);
+			//J'insere les listes dans la super Liste avec index qui correspond à leur emplacement		
+					superList.add(new ArrayList<Object>());
+					superList.get(0).add(listeArticle);
+					superList.get(1).add(listeUtilisateur);
+					superList.get(2).add(listeCategorie);
+					superList.get(3).add(listeRetrait);
+					
+					
+					
+					
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+		
+		return superList;
+		
+	}
+
+
+
+}

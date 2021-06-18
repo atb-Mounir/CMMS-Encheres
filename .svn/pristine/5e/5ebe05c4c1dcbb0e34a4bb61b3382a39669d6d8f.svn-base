@@ -1,0 +1,136 @@
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="org.encheres.bo.enums.Categories"%>
+<%@page import="java.util.Locale.Category"%>
+<%@ include file="../fragments/head.jsp"%>
+
+<body>
+
+<% 
+// 	Variables à récupérer dans servlet
+	boolean etatConnexion=true;
+%>
+
+	<div class="container-fluid">
+	<%@ include file="../fragments/nav.jsp"%>
+<h1>Liste des encheres</h1>
+
+<h2>Filtre</h2>
+
+<form methode="post">
+	<!-- barre de recherche -->
+	<nav class="navbar navbar-light bg-light">
+		<input class="form-control mr-sm-2" type="search"
+			placeholder="rechercher" aria-label="rechercher">
+	</nav>
+	<!-- Liste des cat�gories -->
+	<select name="categorie">
+		<c:forEach items="${categories}" var="categorie">
+			<option>${categorie.libelleCategorie}</option>
+		</c:forEach>
+	</select>
+	<button type="button" class="btn btn-primary btn-lg"> Rechercher</button>
+
+</form>
+
+
+
+<!-- Bloc pour afficher le menu achat ou vente si l'utilisateur est connecté -->
+<%if(etatConnexion == true){ %>
+<!-- Bloc achats -->
+<div class="form-check form-check-inline">
+	<input class="form-check-input" name="achatVente" type="radio" id="achats" value="achats" checked=checked onclick="achatFunction()">
+	<label class="form-check-label" for="inlineCheckbox1">Achats</label>
+	
+	<div class="form-check">
+		<input class="form-check-input" name="choixAchat" type="checkbox" id="ouvert"> 
+		<label class="form-check-label" for="ouvert"> enchères ouvertes</label><br /> 
+		<input class="form-check-input" name="choixAchat" type="checkbox" id="enCours"> 
+		<label class="form-check-label" for="enCours"> Mes enchères en cours</label><br />
+		<input class="form-check-input" name="choixAchat" type="checkbox" id="remporte"> 
+		<label class="form-check-label" for="remporte"> Mes enchères remportées</label>
+	</div>
+</div>
+
+<!-- Bloc ventes -->
+<div class="form-check form-check-inline">
+	<input class="form-check-input" name="achatVente" type="radio" id="ventes" value="ventes" onclick="venteFunction()"> 
+	<label class="form-check-label" for="inlineCheckbox2">Mes ventes</label>
+
+
+
+	<div class="form-check">
+		<input class="form-check-input" name="choixVente" type="checkbox" id="venteEnCours"> 
+		<label class="form-check-label" for="venteEnCours"> Mes ventes en cours</label><br /> 
+		<input class="form-check-input" name="choixVente" type="checkbox" id="venteNonDebutees"> 
+		<label class="form-check-label"	for="venteNonDebutees"> Ventes non débutées</label><br /> 
+		<input class="form-check-input" name="choixVente" type="checkbox" id="venteTerminee"> 
+		<label class="form-check-label"	for="venteTerminee"> Ventes terminées</label>
+	</div>
+</div>
+
+<!--  SECTION D'AFFICHAGE DES ARTICLE DES VENTES AUX ENCHERES -->
+		<div class="container mt-5">
+			<div class="row">
+				<div class="col">
+					<div class="card" style="width: 18rem;">
+						<img class="card-img-top" src="${pageContext.request.contextPath}/img/chateau.jpg" alt="Card image cap">
+						<div class="card-body">
+							<h5 class="card-title">MAGNIFIQUE MANOIRE D'EPOQUE ${nomArticleVendu }</h5>
+							<p class="card-text">${descritpionArticleVendu}
+							Some quick example text to build on the
+							card title and make up the bulk of the card's content.</p>
+							<a href="#" class="btn btn-primary">Voir Article</a>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card" style="width: 18rem;">
+						<img class="card-img-top" src="${pageContext.request.contextPath}/img/chateau.jpg" alt="Card image cap">
+						<div class="card-body">
+							<h5 class="card-title">MAGNIFIQUE MANOIRE D'EPOQUE ${nomArticleVendu }</h5>
+							<p class="card-text">${descritpionArticleVendu}
+							Some quick example text to build on the
+							card title and make up the bulk of the card's content.</p>
+							<a href="#" class="btn btn-primary">Voir Article</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%} %>
+
+
+
+<script type="text/javascript" charset="UTF-8">
+	achatFunction();
+
+	function venteFunction() {
+		document.getElementById("ouvert").disabled = true;
+		document.getElementById("enCours").disabled = true;
+		document.getElementById("remporte").disabled = true;
+		document.getElementById("venteEnCours").disabled = false;
+		document.getElementById("venteNonDebutees").disabled = false;
+		document.getElementById("venteTerminee").disabled = false;
+		document.getElementById("ouvert").checked = false;
+		document.getElementById("enCours").checked = false;
+		document.getElementById("remporte").checked = false;
+	}
+
+	function achatFunction() {
+		document.getElementById("ouvert").disabled = false;
+		document.getElementById("enCours").disabled = false;
+		document.getElementById("remporte").disabled = false;
+		document.getElementById("venteEnCours").disabled = true;
+		document.getElementById("venteNonDebutees").disabled = true;
+		document.getElementById("venteTerminee").disabled = true;
+		document.getElementById("venteEnCours").checked = false;
+		document.getElementById("venteNonDebutees").checked = false;
+		document.getElementById("venteTerminee").checked = false;
+	}
+</script>
+
+<%@ include file="../fragments/footer.jsp"%>
+<%@ include file="../fragments/script.jsp"%>
+
+</body>
+</html>

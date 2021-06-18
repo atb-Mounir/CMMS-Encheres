@@ -1,0 +1,18 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+import org.encheres.bo.Utilisateur;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 23 janv. 2020 - 15:57:58.
+ */
+public interface UtilisateurBLL {
+	
+	public void creerUtilisateur();
+	public Utilisateur testConnexion();
+}

@@ -1,0 +1,16 @@
+package org.encheres.bll;
+
+import java.util.List;
+
+import org.encheres.dal.CategorieDAOJdbcImpl;
+
+public class CategorieManager {
+
+	private CategorieDAOJdbcImpl categorieDAO = new CategorieDAOJdbcImpl();
+	
+	public List<String> ListeDesCategories(){
+		return null;//categorieDAOImpl
+	}
+	
+	
+}

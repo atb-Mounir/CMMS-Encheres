@@ -1,0 +1,142 @@
+<%@ include file="../fragments/head.jsp"%>
+<style>
+.col {margin-bottom:50px}
+</style>
+
+<body>
+	<div class="container-fluid">
+<% 
+// 	Variables à récupérer dans servlet
+	int credit=0;
+	boolean etatConnexion=true;
+%>
+<%@ include file="../fragments/nav.jsp"%>
+<h1 style="text-align:center">Mon profil</h1>
+
+
+<form action="${pageContext.request.contextPath}/Inscription" method="post" 
+class="text-center border border-light p-5">
+
+    <div class="form-row mb-4">
+        <div class="col">
+            <label for="pseudo" class="col-sm-4 col-form-label">Pseudo:</label>
+            <input type="text" id="pseudo" name="pseudo" required>
+        </div>
+        <div class="col">
+            <label for="nom" class="col-sm-4 col-form-label">Nom:</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+    </div>
+
+	<div class="form-row mb-4">
+        <div class="col">
+            <label for="prenom" class="col-sm-4 col-form-label">Prénom:</label>
+            <input type="text" id="prenom" name="prenom" required>
+        </div>
+        <div class="col">
+            <label for="email" class="col-sm-4 col-form-label">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+    </div>
+    
+    <div class="form-row mb-4">
+        <div class="col">
+            <label for="telephone" class="col-sm-4 col-form-label">Téléphone:</label>
+            <input type="tel" id="telephone" name="telephone">
+        </div>
+        <div class="col">
+            <label for="rue" class="col-sm-4 col-form-label">Rue:</label>
+            <input type="text" id="rue" name="rue" required>
+        </div>
+    </div>
+    
+    <div class="form-row mb-4">
+        <div class="col">
+            <label for="codePostal" class="col-sm-4 col-form-label">Code postal:</label>
+            <input type="number" id="codePostal" name="codePostal" required>
+        </div>
+        <div class="col">
+            <label for="ville" class="col-sm-4 col-form-label">Ville:</label>
+            <input type="text" id="ville" name="rue" required>
+        </div>
+    </div>
+    
+    <!-- Mode Déconnecté -->
+    
+    <c:if test="${!etatConnexion}">	
+	    <div class="form-row justify-content-md-center">
+	        <div class="col">
+	            <label for="motDePasse" class="col-sm-4 col-form-label">Mot de passe:</label>
+	            <input type="password" id="motDePasse" name="motDePasse" required>
+	        </div>
+	        <div class="col">
+	            <label for="motDePasse" class="col-sm-4 col-form-label">Confirmer:</label>
+	            <input type="password" id="motDePasse" name="motDePasse" required>
+	        </div>
+	    </div>
+	    
+	    <div class="form-row">
+	        <div class="col">
+	        	<button type="submit" class="btn btn-primary btn-lg col-sm-5"
+					style="margin-left:35%;">Créer</button>
+	        </div>
+	        <div class="col">
+	           <div class="col">
+	            <a class="btn btn-outline-primary btn-lg col-sm-5" href="${pageContext.request.contextPath}/Accueil" role="button" style="margin-left:35%;">Annuler</a>
+	        </div>
+	        </div>
+	    </div>
+    </c:if>
+    
+    <!-- Mode Connecté -->
+    
+    <c:if test="${etatConnexion}">
+	    <div class="form-row justify-content-md-center">
+	        <div class="col">
+	            <label for="motDePasse" class="col-sm-4 col-form-label">Mot de passe actuel:</label>
+	            <input type="password" id="motDePasse" name="motDePasse" required>
+	        </div>
+	        <div class="col"></div>
+	    </div>
+	    
+	    <div class="form-row justify-content-md-center">
+	        <div class="col">
+	            <label for="motDePasse" class="col-sm-4 col-form-label">Nouveau mot de passe:</label>
+	            <input type="password" id="motDePasse" name="motDePasse" required>
+	        </div>
+	        <div class="col">
+	            <label for="motDePasse" class="col-sm-4 col-form-label">Confirmation:</label>
+	            <input type="password" id="motDePasse" name="motDePasse" required>
+	        </div>
+	    </div>
+	    
+	    <div class="form-row justify-content-md-center">
+	        <div class="col">
+	            <label for="credit" class="col-sm-4 col-form-label">Crédit:</label>
+	            <%=credit%>
+	        </div>
+	        <div class="col"></div>
+	    </div>
+	    
+	    <div class="form-row">
+	        <div class="col">
+	        	<button type="submit" class="btn btn-primary btn-lg col-sm-5"
+					style="margin-left:35%;">Enregistrer</button>
+	        </div>
+	        <div class="col">
+	           <div class="col">
+	            <a class="btn btn-outline-primary btn-lg col-sm-5" href="${pageContext.request.contextPath}/Accueil" role="button" style="margin-left:35%;">
+	            Supprimer mon compte</a>
+	        </div>
+	        </div>
+    </div>
+    </c:if>
+    
+</form>
+<!-- Default form register -->
+
+<%@ include file="../fragments/footer.jsp"%>
+<%@ include file="../fragments/script.jsp"%>
+</div>
+</body>
+</html>

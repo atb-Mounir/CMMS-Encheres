@@ -1,0 +1,21 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import org.encheres.bo.Article;
+import org.encheres.bo.Retrait;
+import org.encheres.BusinessException;
+
+/**
+ * Classe en charge de
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:21:58
+ */
+public interface ArticleDAO {
+	public void insertArticle (Article article) throws BusinessException;
+	public void insertRetrait (Retrait retrait) throws BusinessException;
+	
+	
+}

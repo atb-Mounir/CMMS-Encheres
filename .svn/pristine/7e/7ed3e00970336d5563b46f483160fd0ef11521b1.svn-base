@@ -1,0 +1,169 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.encheres.bo.Article;
+import org.encheres.bo.Categorie;
+import org.encheres.bo.Enchere;
+import org.encheres.bo.Retrait;
+import org.encheres.bo.Utilisateur;
+
+import org.encheres.BusinessException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * Classe en charge de
+ * 
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:22:20
+ */
+public class ArticleDAOJdbcImpl implements ArticleDAO {
+
+	private static final String INSERT_ARTICLE = "INSERT INTO ARTICLES_VENDUS " + "(a.no_article,description,"
+			+ "date_debut_encheres,date_fin_encheres," + "prix_initial,prix_vente," + "no_vendeur,no_categorie) "
+			+ "VALUES (?,?,?,?,?,?,?,?)";
+
+	private static final String INSERT_RETRAIT = "INSERT INTO RETRAITS" + " (a.no_article," + "rue," + "code_postal,"
+			+ "ville) " + "VALUES (?,?,?,?)";
+
+	private static final String DETAIL_DE_VENTE = "SELECT a.no_article,nom_article,description,c.no_categorie, c.libelle as 'categorie', max(e.montant_enchere) as 'Meilleure offre', "
+			+ "date_fin_encheres, date_debut_encheres, prix_initial, r.rue, r.code_postal, r.ville, u.pseudo, u.telephone,  u.credit "
+			+ "FROM ARTICLES_VENDUS a " 
+			+ "LEFT JOIN RETRAITS r ON a.no_vendeur= r.no_article "
+			+ "JOIN UTILISATEURS u ON a.no_vendeur=u.no_utilisateur "
+			+ "LEFT JOIN ENCHERES e ON u.no_utilisateur = e.no_acheteur "
+			+ "JOIN CATEGORIES c ON a.no_categorie=c.no_categorie " 
+			+ "WHERE a.no_article = ? "
+			+ "GROUP BY a.no_article,nom_article,description,c.no_categorie, c.libelle, e.montant_enchere,date_debut_encheres,date_fin_encheres,prix_initial, r.rue, r.code_postal, r.ville, u.pseudo, u.telephone,  u.credit";
+
+	@Override
+	public void insertNouvelleVente(Article article, Utilisateur utilisateur, Categorie categorie, Retrait retrait)
+			throws BusinessException {
+		if (article == null) {
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.INSERT_OBJET_NULL);
+			throw businessException;
+		}
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+			try {
+				cnx.setAutoCommit(false);
+				PreparedStatement pstmt = cnx.prepareStatement(INSERT_ARTICLE, PreparedStatement.RETURN_GENERATED_KEYS);
+				System.out.println("je fais un pstmt INSERT ARTICLE");
+				pstmt.setString(1, article.getNomArticle());
+				pstmt.setString(2, article.getDescription());
+				pstmt.setDate(3, java.sql.Date.valueOf(article.getDateDebutEncheres()));
+				pstmt.setDate(4, java.sql.Date.valueOf(article.getDateFinEncheres()));
+				pstmt.setInt(5, article.getMiseAPrix());
+				pstmt.setInt(6, article.getPrixVente());
+				pstmt.setInt(7, utilisateur.getNoUtilisateur());
+				System.out.println("Dans le pstmt INSERT ARTICLE j'enregistre le no_Catégorie à partir de la liste");
+				pstmt.setInt(8, categorie.getNoCategorie());
+				pstmt.executeUpdate();
+				System.out.println("Dans le pstmt INSERT ARTICLE récupération de la PK");
+				ResultSet rs = pstmt.getGeneratedKeys();
+				if (rs.next()) {
+					article.setNoArticle(rs.getInt(1));
+				}
+				System.out.println("Récupération de la PK");
+				rs.close();
+				pstmt.close();
+				pstmt = cnx.prepareStatement(INSERT_RETRAIT);
+				System.out.println("transmission de la PK article pour le no-retrait");
+				pstmt.setInt(1, article.getNoArticle());
+				pstmt.setString(2, retrait.getRueRetrait());
+				pstmt.setString(3, retrait.getCpRetrait());
+				pstmt.setString(4, retrait.getVilleRetrait());
+				pstmt.executeUpdate();
+				System.out.println("Mise à jour dans la BDD de la nouvelle vente");
+				pstmt.close();
+				cnx.commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				cnx.rollback();
+				throw e;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.INSERT_OBJET_NULL);
+		}
+	}
+
+	@Override
+	public void insertRetrait(Retrait retrait) throws BusinessException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Article selectArticleById(String no_article) {
+		Article art = null;
+		// Je crée une SuperListe qui englobe plusieurs liste de données récupérer dans
+		// la BDD avec selectByNomArticle()
+		// List<List<Object>> superList = new ArrayList<List<Object>>();
+		// List<Article> listeArticle = new ArrayList<Article>();
+		// List<Categorie> listeCategorie = new ArrayList<Categorie>();
+		// List<Retrait> listeRetrait = new ArrayList<Retrait>();
+		// List<Utilisateur> listeUtilisateur = new ArrayList<Utilisateur>();
+		// //Je nomme les index de la superListe pour bien repérer la positions des
+		// listes quand on les récupères.
+		// int indexArticle = 0;
+		// int indexUtilisateur=1;
+		// int indexCategorie=2;
+		// int indexRetrait=3;
+		try (Connection cnx = ConnectionProvider.getConnection();
+				PreparedStatement rqt = cnx.prepareStatement(DETAIL_DE_VENTE);) {
+
+			rqt.setString(1, no_article);
+			try (ResultSet rs = rqt.executeQuery()) {
+
+				Categorie cat = null;
+				Retrait retr = null;
+				Utilisateur ut = null;
+				while (rs.next()) {
+					// je crée les nouveaux objets pour pouvoir les inséser dans l'objet Article
+					cat = new Categorie(rs.getString("categorie"));
+					retr = new Retrait(rs.getString("rue"), rs.getString("code_postal"), rs.getString("ville"));
+					ut = new Utilisateur(rs.getString("pseudo"), rs.getString("telephone"), rs.getInt("credit"));
+
+					art = new Article(rs.getInt("no_article"), rs.getString("nom_article"),
+							rs.getString("description"), rs.getDate("date_debut_encheres").toLocalDate(),
+							rs.getDate("date_fin_encheres").toLocalDate(), rs.getInt("prix_initial"),
+							rs.getInt("Meilleure offre"), cat, retr, ut);
+					// //J'inser les nouveaux Objet dans la liste correspondante
+					// listeArticle.add(art);
+					// listeCategorie.add( cat);
+					// listeRetrait.add(retr);
+					// listeUtilisateur.add(ut);
+					// //J'insere les listes dans la super Liste avec index qui correspond à leur
+					// emplacement
+					// superList.add(new ArrayList<Object>());
+					// superList.get(indexArticle).add(listeArticle);
+					// superList.get(indexUtilisateur).add(listeUtilisateur);
+					// superList.get(indexCategorie).add(listeCategorie);
+					// superList.get(indexRetrait).add(listeRetrait);
+					System.out.println("rue retrait"+retr.getRueRetrait());
+					System.out.println("Je suis dans ***");
+					System.out.println("numeroArticle dans la jdbc" + art.getNoArticle());
+				}
+			}
+
+			return art;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return art;
+	}
+
+}

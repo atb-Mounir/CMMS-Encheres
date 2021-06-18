@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+import java.util.List;
+
+/**
+ * Classe en charge
+ * @author maitbaha2019
+ * @version EncheresCMM - V1.0
+ * @date 23 janv. 2020 - 09:46:42
+ */
+public interface ArticleBLL {
+
+	public List<List<Object>> afficherDetailVente(String nomArticle);
+}

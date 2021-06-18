@@ -1,0 +1,23 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+import java.util.List;
+
+import org.encheres.dal.ArticleDAO;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 22 janv. 2020 - 14:24:09.
+ */
+public class ArticleManager implements ArticleBLL {
+		private ArticleDAO articleDAO;
+	public List<List<Object>> afficherDetailVente(String nomArticle){
+			return this.articleDAO.selectByNomArticle(nomArticle);
+	}
+	
+
+}

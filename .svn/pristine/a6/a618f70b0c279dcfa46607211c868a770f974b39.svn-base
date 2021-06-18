@@ -1,0 +1,17 @@
+#ERREURS RAPPORTEES PAR LA DAL:
+#=>Erreurs générales
+10000=Une tentative d'enrgistrement d'informations inexistantes a eu lieu.
+10001=Une erreur non gérée est survenue lors de l'enrgistrement des informations.
+#=>Erreurs Avis
+10002=Les repas sont inaccessibles pour le moment.
+
+#ERREURS RAPPORTEES PAR LA BLL:
+#=>Erreurs Repas
+20000=La date ne peut pas être dans le futur
+20001=La liste des aliments est obligatoire et chaque aliment ne doit pas dépasser 50 caractères
+
+#ERREURS RAPPORTEES PAR LES SERVLETS:
+#=>Erreurs Repas
+30000=La date doit être dans un format valide (aaaa-MM-dd)
+30001=L'heure doit être dans un format valide (hh:mm)
+30002=Il est obligatoire de saisir au moins un aliment pour le repas

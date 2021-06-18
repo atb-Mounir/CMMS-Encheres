@@ -1,0 +1,9 @@
+package org.encheres.bll;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Utilisateur;
+
+public interface TestBLL {
+
+	public void insererArticleTest(String nom);
+}

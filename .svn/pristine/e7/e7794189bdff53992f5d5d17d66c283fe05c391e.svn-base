@@ -1,0 +1,205 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Article;
+import org.encheres.message.CodesResultat;
+import org.encheres.bo.Utilisateur;
+
+
+/**
+ * Classe en charge de
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:22:37
+ */
+public class UtilisateurDAOJdbcImpl implements UtilisateurDAO {
+
+	private static final String INSERT_UTILISATEUR="insert into UTILISATEURS VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+	private static final String ENCHERS_OUVERTES = "select nom_article,prix_initial,date_fin_encheres,no_vendeur FROM ARTICLES_VENDUS" +
+			"WHERE date_fin_encheres > GETDATE();";
+	private static final String MES_ENCHERES_EN_COURS ="select nom_article,prix_initial,date_fin_encheres,no_vendeur FROM ARTICLES_VENDUS art"+
+			" JOIN ENCHERES e ON art.no_article=e.no_article JOIN UTILISATEURS ut ON e.no_acheteur=ut.no_utilisateur" +
+			"WHERE date_fin_encheres > GETDATE() AND e.no_acheteur=?;";
+	private static final String MES_ENCHERES_REMPORTEES = "select MAX(montant_enchere),art.nom_article,art.prix_initial,art.date_fin_encheres,"+
+			"art.no_vendeur FROM ENCHERES e JOIN ARTICLES_VENDUS art ON art.no_article=e.no_article"+
+			"JOIN UTILISATEURS ut ON e.no_acheteur=ut.no_utilisateur WHERE date_fin_encheres < GETDATE()"+
+			"AND e.no_acheteur=? GROUP BY art.nom_article,art.prix_initial,art.date_fin_encheres,art.no_vendeur;";
+	private static final String MES_VENTES_EN_COURS ="SELECT a.no_article,a.nom_article,a.description,a.date_debut_encheres,a.date_fin_encheres,"+
+			"a.prix_initial,a.prix_vente,a.no_vendeur,a.no_categorie,u.pseudo FROM ARTICLES_VENDUS as a JOIN UTILISATEURS u " +
+			"ON u.no_utilisateur=a.no_vendeur WHERE no_vendeur=? AND (date_debut_encheres<=GETDATE() AND date_fin_encheres<=GETDATE());";
+	private static final String MES_VENTES_NON_DEBUTEES = "SELECT a.no_article,a.nom_article,a.description,a.date_debut_encheres,a.date_fin_encheres,"+
+			"a.prix_initial,a.prix_vente,a.no_vendeur,a.no_categorie,u.pseudo FROM ARTICLES_VENDUS as a"+
+			"JOIN UTILISATEURS u  ON u.no_utilisateur=a.no_vendeur  WHERE no_vendeur=? AND date_debut_encheres>GETDATE();";
+	private static final String MES_VENTES_TERMINEES = "SELECT a.no_article,a.nom_article,a.description,a.date_debut_encheres,a.date_fin_encheres,"+
+			 "a.prix_initial,a.prix_vente,a.no_vendeur,a.no_categorie,u.pseudo FROM ARTICLES_VENDUS as a"+
+			 "JOIN UTILISATEURS u  ON u.no_utilisateur=a.no_vendeur WHERE no_vendeur=? AND date_fin_encheres<GETDATE();";
+	
+	@Override
+	public void creerUtilisateur(Utilisateur utilisateur) throws BusinessException {
+		System.out.println("Je suis dans creerUtilisateur");
+		if(utilisateur==null)
+		{
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.INSERT_UTILISATEUR_NULL);
+			throw businessException;
+		}
+		
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			try
+			{
+				cnx.setAutoCommit(false);
+				PreparedStatement pstmt;
+				ResultSet rs;
+				pstmt = cnx.prepareStatement(INSERT_UTILISATEUR, PreparedStatement.RETURN_GENERATED_KEYS);
+				
+				pstmt.setString(1, utilisateur.getPseudo());
+				pstmt.setString(2, utilisateur.getNom());
+				pstmt.setString(3, utilisateur.getPrenom());
+				pstmt.setString(4, utilisateur.getEmail());
+				pstmt.setString(5, utilisateur.getTelephone());
+				pstmt.setString(6, utilisateur.getRueUtilisateur());
+				pstmt.setString(7, utilisateur.getCpUtilisateur());
+				pstmt.setString(8, utilisateur.getVilleUtilisateur());
+				pstmt.setString(9, utilisateur.getMotDePasse());
+				pstmt.setInt(10, utilisateur.getCredit());
+				pstmt.setByte(6, (byte)(utilisateur.isAdministrateur()?1:0));
+				
+				pstmt.executeUpdate();
+				rs = pstmt.getGeneratedKeys();
+				if(rs.next())
+				{
+					utilisateur.setNoUtilisateur(rs.getInt(1));
+				}
+				rs.close();
+				pstmt.close();
+				cnx.commit();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				cnx.rollback();
+				throw e;
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultatDAL.INSERT_UTILISATEUR_ECHEC);
+			throw businessException;
+		}
+		
+	}
+
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#byNomArticle()
+	 */
+	@Override
+	public List<Article> byNomArticle() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#byCategorie()
+	 */
+	@Override
+	public List<Article> byCategorie() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#encheresOuvertes()
+	 */
+	@Override
+	public List<Article> encheresOuvertes() throws BusinessException {
+		List<Article> encheresOuvertes = new ArrayList<Article>();
+		try(Connection cnx = ConnectionProvider.getConnection())
+		{
+			PreparedStatement pstmt = cnx.prepareStatement(ENCHERS_OUVERTES);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next())
+			{
+				encheresOuvertes.add(new Article(rs.getInt("no_article"),
+												rs.getString("nom_article"),
+												rs.getString("description"),
+												rs.getDate("dateDebutEncheres"),
+												rs.getDate("date_fin_encheres"),
+												rs.getInt("prix_initial"),
+												rs.getInt("no_vendeur"),
+												rs.getInt("no_categorie")));
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			BusinessException businessException = new BusinessException();
+			businessException.ajouterErreur(CodesResultat.LECTURE_LISTES_ECHEC);
+			throw businessException;
+		}
+		return encheresOuvertes;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#mesEncheresEnCours()
+	 */
+	@Override
+	public List<Article> mesEncheresEnCours() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#mesEncheresRemportees()
+	 */
+	@Override
+	public List<Article> mesEncheresRemportees() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#mesVentesEnCours()
+	 */
+	@Override
+	public List<Article> mesVentesEnCours() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#mesVentesNonDebutees()
+	 */
+	@Override
+	public List<Article> mesVentesNonDebutees() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/** 
+	 * @{inheritDoc}
+	 * @see org.encheres.dal.UtilisateurDAO#mesVentesTerminees()
+	 */
+	@Override
+	public List<Article> mesVentesTerminees() throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+}

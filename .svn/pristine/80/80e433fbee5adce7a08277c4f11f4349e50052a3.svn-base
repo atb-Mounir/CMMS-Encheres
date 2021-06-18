@@ -1,0 +1,95 @@
+/**
+ * 
+ */
+package org.encheres.bo;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 21 janv. 2020 - 15:18:22.
+ */
+public class Enchere implements Serializable{
+	
+	private static final long serialVersionUID = 8895507791974310209L;
+	private LocalDate dateEnchere;
+	private int montantEnchere;
+	private Article article;
+
+	
+	/**
+	 * Constructeur
+	 */
+	public Enchere() {
+	}
+	
+	public Enchere(LocalDate dateEnchere,int montantEnchere,Article article) {
+		this.dateEnchere = dateEnchere;
+		this.montantEnchere = montantEnchere;
+		this.article = article;
+	}
+	
+	
+	/**
+	 * Getter pour dateEnchere.
+	 * @return the dateEnchere
+	 */
+	public LocalDate getDateEnchere() {
+		return dateEnchere;
+	}
+
+	/**
+	 * Getter pour montantEnchere.
+	 * @return the montantEnchere
+	 */
+	public int getMontantEnchere() {
+		return montantEnchere;
+	}
+
+	/**
+	 * Setter de dateEnchere.
+	 * @param dateEnchere the dateEnchere to set
+	 */
+	public void setDateEnchere(LocalDate dateEnchere) {
+		this.dateEnchere = dateEnchere;
+	}
+
+	/**
+	 * Setter de montantEnchere.
+	 * @param montantEnchere the montantEnchere to set
+	 */
+	public void setMontantEnchere(int montantEnchere) {
+		this.montantEnchere = montantEnchere;
+	}
+
+	/**
+	 * Getter pour article.
+	 * @return the article
+	 */
+	public Article getArticle() {
+		return article;
+	}
+
+	/**
+	 * Setter de article.
+	 * @param article the article to set
+	 */
+	public void setArticle(Article article) {
+		this.article = article;
+	}
+	
+	/** 
+	 * @{inheritDoc}
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Enchere [dateEnchere=" + dateEnchere + ", montantEnchere=" + montantEnchere + ", article=" + article
+				+ "]";
+	}
+
+
+}

@@ -1,0 +1,16 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import java.util.List;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Article;
+
+
+public interface AccueilDAO {
+	public List<Article> toutesLesEncheresOuvertes() throws BusinessException;
+	public List<Article> mesEncheresOuvertes() throws BusinessException;
+	public List<Article> affichageParCategorie(String libelleCategorie) throws BusinessException;
+}

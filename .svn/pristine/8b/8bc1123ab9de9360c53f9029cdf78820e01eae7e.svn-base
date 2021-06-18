@@ -1,0 +1,172 @@
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="C" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+
+<%@page import="org.encheres.message.LecteurMessage"%>
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="java.util.Locale.Category"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.lang.String"%>
+
+<%@ include file="../fragments/head.jsp" %>
+<%@ include file="../fragments/nav.jsp" %>
+
+<body>
+<div class="container">
+  <!-- Content here -->
+
+<div class="card-deck">
+  <div class="card border-0 col-md-4 ">
+    <img class="card-img-top w-100" src="${pageContext.request.contextPath}/img/chateau.jpg" alt="Card image cap">
+  </div>
+  <div class="card border-0">
+    <div class="card-body">
+      <h4 class="card-title">
+      <!-- CONDITION POUR L AFFICHAGE DU GAGNANT -->
+
+						<jsp:useBean id="today" class="java.util.Date" />
+						<fmt:setLocale value="fr_fr" />
+						<fmt:parseDate var="dateFinEncheres" value="${article.dateFinEncheres}"
+							pattern="yyyy-MM-dd" />
+						<c:if test="${today.time gt dateFinEncheres.time && article.enchere.noAcheteur.noUtilisateur==newUtilisateur.noUtilisateur}">
+								<h4>Vous avez remporte l'enchere !</h4><br/>
+						</c:if>
+						<c:if test="${today.time gt dateFinEncheres.time && article.utilisateur.noUtilisateur==newUtilisateur.noUtilisateur}">
+								<h4>${article.article.enchere.noAcheteur.pseudo} a remporte l'enchere !</h4><br/>
+						</c:if>
+						
+						<h4>Detail vente</h4><br/>
+					<section class="card-text">
+					<div class="col align-self-center">
+					<form action="${pageContext.request.contextPath }/DetailVente" method="post">	
+						<table class="table ">
+							<thead>
+								<tr>
+									<th scope="col" >
+									<label for="no_article" class="col-sm-4 col-form-label"></label>
+           							 <input type="hidden" id="no_article" name="no_article" maxlength="30" required value="${article.noArticle}">
+									${article.categorie.libelleCategorie}
+									
+									</th>
+									<th scope="col"
+										
+									>${article.nomArticle}</th>
+								</tr>
+							</thead>
+							<tbody class="w-200">
+								<tr>
+									<td>Description:</td>
+									<td>${article.description}</td>
+								</tr>
+								<tr>
+									<td>Meilleur offre:</td>
+									<c:if test="${article.enchere.montantEnchere==0}">
+									<td>Soyez le premier a encherir !</td>
+									</c:if>
+									<c:if test="${article.enchere.montantEnchere!=0}">	
+									<td>${article.enchere.montantEnchere} pts par ${article.enchere.noAcheteur.pseudo}</td>
+									</c:if>
+									<input type="hidden" name="meilleureOffre" value=${article.enchere.montantEnchere}>	
+								</tr>
+								<tr>
+									<td>Mise a prix:</td>
+									<td>${article.miseAPrix}</td>
+								</tr>
+								<!-- ligne presente seulement dans la page detail vente	-->
+								<tr id="deitailVente">
+									<fmt:parseDate value="${article.dateFinEncheres}" pattern="yyyy-MM-dd" var="DateFinParsee" type="date"/>
+									<fmt:formatDate value="${DateFinParsee}" var="newDateFinParsee" type="date" pattern="dd-MM-yyyy" />
+									<td>Fin de l'enchere:</td>
+									<td>${newDateFinParsee }</td>
+								</tr>
+								<tr>
+									<td>Retrait:</td>
+									<td>
+										${article.retrait.rueRetrait}<br/>
+										${article.retrait.cpRetrait}
+										${article.retrait.villeRetrait}
+									</td>
+								</tr>
+								<tr>
+									<td>Vendeur:</td>
+									<td >${article.utilisateur.pseudo}</td>
+								</tr>
+								<tr>
+									<td id="remporteVente">tel:</td>
+									<td>${article.utilisateur.telephone}</td>
+								</tr>
+					
+										<tr>
+											<!-- ligne presente seulement dans la page detail vente	-->
+											<td id="deitailVente">Ma proposition:</td>
+											<td>${prixArticleEnCour }</td>
+											<td><div class="input-group mb-3">
+													<!-- Section formulaire pour rencherir qui renvoi en Post vers la servlet DetailVente	-->
+
+													<input type="number" min="${meilleurOffre }"
+														max="${credit} " name="montant_enchere" required
+														maxlength="4" value="${enchere.montant_enchere }"
+														class="form-control" placeholder="Encherir ici"
+														aria-label="Recipient's username"
+														aria-describedby="basic-addon2">
+													<div class="input-group-append">
+														<span class="input-group-text">Credit disponible :
+															${newUtilisateur.credit}</span>
+														<!-- bouton permettant de valider la surench�re-->
+
+														<c:if
+															test="${newUtilisateur.credit<article.enchere.montantEnchere }">
+															<button disabled tabindex="0" type="submit"
+																class="btn btn-lg btn-danger" role="button"
+																data-toggle="popover" data-trigger="focus"
+																title="Dismissible popover"
+																data-content="And here's some amazing content. It's very engaging. Right?">Encherir</button>
+														</c:if>
+														<c:if
+															test="${newUtilisateur.credit>article.enchere.montantEnchere }">
+															<button tabindex="0" type="submit"
+																class="btn btn-lg btn-danger" role="button"
+																data-toggle="popover" data-trigger="focus"
+																title="Dismissible popover"
+																data-content="And here's some amazing content. It's very engaging. Right?">Encherir</button>
+														</c:if>
+													</div>
+												</div></td>
+										</tr>
+										<c:if test="${!empty listeCodesErreur}">
+											<div class="alert alert-danger" role="alert">
+												<strong>Erreur!</strong>
+												<ul>
+													<c:forEach var="code" items="${listeCodesErreur}">
+														<li>${LecteurMessage.getMessageErreur(code)}</li>
+													</c:forEach>
+												</ul>
+											</div>
+										</c:if>
+										<tr>
+									<td class="text-center" colspan="2"><a
+										class="justify-self-center btn btn-info"
+										href="<%=request.getContextPath() %>/Accueil" role="button">Back</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						</form>
+					</div>
+					</section>
+				</div>
+  </div>
+</div>
+</div>	
+	<script type="text/javascript" charset="UTF-8">
+	encherirFunction();
+
+	function venteFunction() {
+		document.getElementById("ouvert").disabled = true;
+	}
+	</script>
+		
+	<%@ include file="../fragments/footer.jsp" %>
+	<%@ include file="../fragments/script.jsp" %>
+</body>
+</html>

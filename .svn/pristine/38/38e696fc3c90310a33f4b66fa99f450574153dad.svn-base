@@ -1,0 +1,39 @@
+/**
+ * 
+ */
+package org.encheres.dal;
+
+import java.util.List;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Article;
+import org.encheres.bo.Utilisateur;
+
+/**
+ * Classe en charge de
+ * 
+ * @author mdelauna2
+ * @version EncheresCMM - V1.0
+ * @date 22 janv. 2020 - 12:22:09
+ */
+public interface UtilisateurDAO {
+
+	public void creerUtilisateur(Utilisateur utilisateur) throws BusinessException;
+
+	public List<Article> byNomArticle() throws BusinessException;
+
+	public List<Article> byCategorie() throws BusinessException;
+
+	public List<Article> encheresOuvertes() throws BusinessException;
+
+	public List<Article> mesEncheresEnCours() throws BusinessException;
+
+	public List<Article> mesEncheresRemportees() throws BusinessException;
+
+	public List<Article> mesVentesEnCours() throws BusinessException;
+
+	public List<Article> mesVentesNonDebutees() throws BusinessException;
+
+	public List<Article> mesVentesTerminees() throws BusinessException;
+
+}

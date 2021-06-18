@@ -1,0 +1,107 @@
+<%@ include file="../fragments/head.jsp"%>
+<body>
+	<div class="container-fluid">
+		<%@ include file="../fragments/nav.jsp"%>
+		<<<<<<< .mine
+</body>
+</html>
+||||||| .r41
+<h1 style="text-align: center">Nouvelle vente</h1>
+
+
+<form action="${pageContext.request.contextPath}/NouvelleVente"
+	method="post" class="text-center border border-light p-5">
+
+	<div class="form-row col-mb-4">
+		<div class="col">
+			<label for="article" class="col-sm-4 col-form-label">Article:</label>
+			<input type="text" id="article" name="article" required>
+		</div>
+		<div class="col">
+			<label for="description" class="col-sm-4 col-form-label">Description:</label>
+			<textarea id="story" name="story" rows="5" cols="33">
+			</textarea>
+		</div>
+	</div>
+	<div>
+		<!-- Liste des cat�gories -->
+		<label for="categorie">Cat�gorie</label> <select name="categorie">
+			<c:forEach items="${categories}" var="categorie">
+				<option>${categorie.nom}</option>
+			</c:forEach>
+		</select>
+	</div>
+	<div>
+		<label>Photo de l'article</label> <input label="UPLOADER"> <a
+			href="#"
+	</div>
+
+
+	<!-- 		<div class="form-group col-md-4"> -->
+	<!--       		<label for="inputState">Cat�gorie</label> -->
+	<!--      			 <select id="inputState" class="form-control"> -->
+	<!--         			<option selected>Choose...</option> -->
+	<!--         			<option>Informatique</option> -->
+	<!--         			<option>Ameublement</option> -->
+	<!--         			<option>V�tement</option> -->
+	<!--         			<option>Sport&Loisir</option> -->
+	<!--         		</select> -->
+	<!--     	</div> -->
+
+
+
+</form>
+
+
+<%@ include file="./WEB-INF/footer.jsp"%>=======
+<h1 style="text-align: center">Nouvelle vente</h1>
+
+
+<form action="${pageContext.request.contextPath}/NouvelleVente"
+	method="post" class="text-center border border-light p-5">
+
+	<div class="form-row col-mb-4">
+		<div class="col">
+			<label for="article" class="col-sm-4 col-form-label">Article:</label>
+			<input type="text" id="article" name="article" required>
+		</div>
+		<div class="col">
+			<label for="description" class="col-sm-4 col-form-label">Description:</label>
+			<textarea id="story" name="story" rows="5" cols="33">
+			</textarea>
+		</div>
+	</div>
+	<div>
+		<!-- Liste des cat�gories -->
+		<label for="categorie">Cat�gorie</label> <select name="categorie">
+			<c:forEach items="${categories}" var="categorie">
+				<option>${categorie.nom}</option>
+			</c:forEach>
+		</select>
+	</div>
+	<div>
+		<label>Photo de l'article</label> <input label="UPLOADER">
+
+	</div>
+
+
+	<!-- 		<div class="form-group col-md-4"> -->
+	<!--       		<label for="inputState">Cat�gorie</label> -->
+	<!--      			 <select id="inputState" class="form-control"> -->
+	<!--         			<option selected>Choose...</option> -->
+	<!--         			<option>Informatique</option> -->
+	<!--         			<option>Ameublement</option> -->
+	<!--         			<option>V�tement</option> -->
+	<!--         			<option>Sport&Loisir</option> -->
+	<!--         		</select> -->
+	<!--     	</div> -->
+
+
+
+</form>
+
+<%@ include file="../fragments/footer.jsp"%>
+<%@ include file="../fragments/script.jsp"%>
+</div>
+</body>
+</html>

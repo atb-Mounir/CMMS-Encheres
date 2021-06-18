@@ -1,0 +1,65 @@
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="org.encheres.bo.enums.Categories"%>
+<%@page import="java.util.Locale.Category"%>
+<%@include file="header.jsp"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<h1>Liste des encheres</h1>
+
+<h2>Filtres</h2>
+
+<form methode="post">
+	<!-- barre de recherche -->
+	<nav class="navbar navbar-light bg-light">
+		<input class="form-control mr-sm-2" type="search"
+			placeholder="rechercher" aria-label="rechercher">
+	</nav>
+	<!-- Liste des catégories -->
+	<select name="categorie">
+		<c:forEach items="${categories}" var="categorie">
+			<option>${categorie.nom}</option>
+		</c:forEach>
+	</select>
+	<button type="button" class="btn btn-primary btn-lg">
+		Rechercher</button>
+
+</form>
+
+		<!-- Bloc pour afficher le menu achat ou vente si l'utilisateur est connecté -->
+		<!-- Bloc achats -->
+		<div class="form-check form-check-inline">
+			<input class="form-check-input" name="achatVente" type="radio" id="achats" value="achats"> 
+			<label class="form-check-label" for="inlineCheckbox1">Achats</label>
+			<div class="form-check">
+				<input class="form-check-input" name="choixAchat" type="checkbox" id="ouvert">
+				<label class="form-check-label" for="ouvert"> enchères ouverts</label><br/>
+				<input class="form-check-input" name="choixAchat" type="checkbox" id="enCours">
+				<label class="form-check-label" for="enCours"> Mes enchères en cours</label><br/>
+				<input class="form-check-input" name="choixAchat" type="checkbox" id="remporte">
+				<label class="form-check-label" for="remporte"> Mes enchères remportés</label>
+			</div>
+		</div>
+		
+		<!-- Bloc ventes -->
+		<div class="form-check form-check-inline">
+			<input class="form-check-input" name="achatVente" type="radio" id="ventes" value="ventes"> 
+			<label class="form-check-label"	for="inlineCheckbox2">Mes ventes</label>
+			
+			<div class="form-check">
+				<input class="form-check-input" name="choixVente" type="checkbox" id="venteEnCours">
+				<label class="form-check-label" for="venteEnCours"> Mes ventes en cours</label><br/>
+				<input class="form-check-input" name="choixVente" type="checkbox" id="venteNonDebutees">
+				<label class="form-check-label" for="venteNonDebutees"> Ventes non débutées</label><br/>
+				<input class="form-check-input" name="choixVente" type="checkbox" id="venteTerminee">
+				<label class="form-check-label" for="venteTerminee"> Ventes terminées</label>
+			</div>
+		</div>
+		
+		<div>
+	<br/>
+	<p>Afficher liste de toutes les enchères en cours</p>
+
+</div>
+
+
+<%@ include file="footer.jsp"%>

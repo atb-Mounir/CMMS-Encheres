@@ -1,0 +1,55 @@
+<%@ include file="../fragments/head.jsp"%>
+<body>
+	<div class="container-fluid">
+		<%@ include file="../fragments/nav.jsp"%>
+		<div id="contenu"
+			class="row align-items-center justify-content-center"
+			style="margin-top: 10%">
+
+			<form action="${pageContext.request.contextPath}/Connexion" method="post">
+				<div class="form-group row">
+					<label for="identifiant" class="col-sm-5 col-form-label">Identifiant</label>
+					<div class="col-sm-5">
+						<input type="text" class="form-control" id="identifiant"
+							name="identifiant">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="motDePasse" class="col-sm-5 col-form-label">Mot
+						de passe</label>
+					<div class="col-sm-5">
+						<input type="password" class="form-control" id="motDePasse"
+							name="motDePasse">
+					</div>
+				</div>
+
+				<div class="form-group row">
+
+					<div id="bouton" style="display: inline-block;">
+						<button type="submit" class="btn btn-primary">Connexion</button>
+					</div>
+
+					<div style="display: inline-block; margin-left: 30px">
+						<input type="checkbox" id="seSouvenirDeMoi" name="seSouvenirDeMoi" checked> 
+						<label for="seSouvenirDeMoi">Se souvenir de moi</label><br /> 
+							<a href="#">Mot de passe oublié</a>
+					</div>
+				</div>
+				<div>
+	
+					<button type="button"
+						class="btn btn-outline-primary btn-lg col-sm-10"
+						style="margin-top: 50px">
+						<a href="${pageContext.request.contextPath}/MonProfil">Créerun compte</a>
+					</button>
+				
+				</div>
+			</form>
+
+		</div>
+
+		<%@ include file="../fragments/footer.jsp"%>
+		<%@ include file="../fragments/script.jsp"%>
+	</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/**
+ * 
+ */
+package org.encheres.bo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 21 janv. 2020 - 14:51:12.
+ */
+public class Categorie {
+	
+	private int noCategorie;
+	private String libelleCategorie;
+	private List<String>listeCategories;
+
+	/**
+	 * Constructeur
+	 */
+	public Categorie() {
+		listeCategories=new ArrayList<String>();
+	}
+	
+	public Categorie(String libelleCategorie) {
+		this();
+		this.libelleCategorie = libelleCategorie;
+	}
+	
+	/**
+	 * Méthode pour générer la liste de catégories
+	 */
+	public List ListCategories(String libelleCategorie) {
+		listeCategories.add(libelleCategorie);
+		return listeCategories;
+	}
+	
+	/**
+	 * Methode pour récupérer le numéro de catégorie
+	 * set id ?
+	 */
+	
+	
+	
+	
+	
+	
+	/**
+	 * Getter pour libelleCategorie.
+	 * @return the libelleCategorie
+	 */
+	public String getLibelleCategorie() {
+		return libelleCategorie;
+	}
+
+	/**
+	 * Setter de libelleCategorie.
+	 * @param libelleCategorie the libelleCategorie to set
+	 */
+	public void setLibelleCategorie(String libelleCategorie) {
+		this.libelleCategorie = libelleCategorie;
+	}
+
+	/** 
+	 * @{inheritDoc}
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Categorie [noCategorie=" + noCategorie + ", libelleCategorie=" + libelleCategorie + ", listeCategories="
+				+ listeCategories + "]";
+	}
+	
+	
+	
+}

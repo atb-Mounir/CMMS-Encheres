@@ -1,0 +1,14 @@
+<%@ include file="../fragments/head.jsp"%>
+<%@ include file="../fragments/nav.jsp"%>
+
+<body>
+	<div class="container-fluid">
+
+
+
+
+		<%@ include file="../fragments/footer.jsp"%>
+		<%@ include file="../fragments/script.jsp"%>
+	</div>
+</body>
+</html>

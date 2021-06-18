@@ -1,0 +1,64 @@
+<%@ include file="../fragments/head.jsp"%>
+<body>
+	<div class="container-fluid">
+		<%@ include file="../fragments/nav.jsp"%>
+
+		<div class="container">
+			<div class="row">
+				<div class="col align-self-start"></div>
+				<div class="col align-self-center">
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Pseudo</th>
+								<th scope="col">${pseudoUtilisateur }</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Nom:</td>
+								<td>${nomUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Prenom:</td>
+								<td>${prenomUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Email:</td>
+								<td>${emailUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Telephone:</td>
+								<td>${telephoneUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Rue:</td>
+								<td>${rueUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Code postal:</td>
+								<td>${codePostaleUtilisateur }</td>
+							</tr>
+							<tr>
+								<td>Ville:</td>
+								<td>${villeUtilisateur }</td>
+							</tr>
+							<tr>
+								<td class="text-center" colspan="2"><a
+									class="justify-self-center btn btn-primary"
+									href="<%=request.getContextPath()%>/MonProfil" role="button">Modifier</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col align-self-end"></div>
+			</div>
+		</div>
+
+		<%@ include file="../fragments/footer.jsp"%>
+		<%@ include file="../fragments/script.jsp"%>
+	</div>
+</body>
+</html>
+

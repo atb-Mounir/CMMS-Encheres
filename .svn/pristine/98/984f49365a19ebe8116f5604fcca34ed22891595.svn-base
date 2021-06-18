@@ -1,0 +1,90 @@
+
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="org.encheres.bo.Categorie"%>
+>>>>>>> .r113
+<%@page import="java.util.Locale.Category"%>
+<%@ include file="../fragments/head.jsp"%>
+
+
+<body>
+	<div class="container-fluid">
+		<%@ include file="../fragments/nav.jsp"%>
+
+		<h1 style="text-align: center">Nouvelle vente</h1>
+
+
+	<form action="${pageContext.request.contextPath}/NouvelleVente"
+		method="post" class="text-center border border-light p-5">
+
+		<div>
+			<div class="col">
+				<label for="article" class="col-sm-4 col-form-label">Article:</label>
+				<input type="text" id="article" name="nomArticle" required>
+			</div>
+			<div class="col">
+				<label for="description" class="col-sm-4 col-form-label">Description:</label>
+				<textarea id="story" name="description" rows="5" cols="33">
+				</textarea>
+			</div>
+		</div>
+		<div>
+			<!-- Liste des cat�gories -->
+			<select name="categorie">
+				<c:forEach items="${categories}" var="categorie">
+					<option value="${ categorie.noCategorie }">${categorie.libelleCategorie}</option>
+				</c:forEach>
+			</select>
+		</div>
+		<!-- photo de l'article : rechercher la photo -->
+		<div>
+			<label>Photo de l'article</label>
+			<input label="UPLOADER"> 
+		</div>
+		<div>
+		<!-- photo de l'article -->
+			<label>Mise a prix</label>
+			<input type="number" name="miseAPrix" min="0" max="2000" step="10">
+		</div>
+		<div>
+			<label>Debut de l'ench�re :</label>
+			<input type="date" name="dateDebutEnchere" size="50px">
+		</div>
+		<div>
+			<label>Fin de l'enchere :</label>
+			<input type="date" name="dateFinEnchere" size="50px">
+		</div>
+		<div>
+			<fieldset>
+				<legend>Retrait</legend>
+					<label>Rue :</label> <input type="text" name="retraitRue" size="50px">
+					<label>Code Postal :</label> <input type="text" name="retraitCP" size="50px" >
+					<label>Ville :</label> <input type="text" name="retraitVille" size="50px">
+				</fieldset>
+		</div>
+
+		<div class="form-row">
+	        <div class="col">
+	        	<input type="submit" name="enregistrer" value="Enregistrer" class="btn btn-outline-primary btn-lg col-sm-5" size="20px" style="margin-left:35%;">
+	        </div>
+	       	<div class="col">
+	        	<div class="col">
+	        		<input type="submit" name="annuler" value="Annuler" class="btn btn-outline-primary btn-lg col-sm-5" size="20px" style="margin-left:35%;">
+	           	</div>
+	        </div>
+	        <div class="col">
+	        		<input type="submit" name="annulerVente" value="AnnulerVente" class="btn btn-outline-primary btn-lg col-sm-5" size="20px" style="margin-left:35%;">
+	        </div>
+	    </div>
+
+
+</form>
+
+
+
+
+
+<%@ include file="../fragments/footer.jsp"%>
+<%@ include file="../fragments/script.jsp"%>
+</div>
+</body>
+</html>

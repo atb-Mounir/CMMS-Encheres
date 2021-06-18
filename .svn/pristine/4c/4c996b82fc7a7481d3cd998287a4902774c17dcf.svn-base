@@ -1,0 +1,46 @@
+/**
+ * 
+ */
+package org.encheres.bo.enums;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 20 janv. 2020 - 14:57:14.
+ */
+public enum Categories {
+	
+	INFORMATIQUE("Informatique"), 
+	AMEUBLEMENT("Ameublement"), 
+	VETEMENT("Vêtement"), 
+	SPORTS_LOISIRS("Sport et Loisir");
+	
+	/**
+	 * Constructeur
+	 */
+	
+	private String nom;
+	
+	private Categories(String nom) {
+		this.nom = nom;
+	}
+
+	/**
+	 * Getter pour nom.
+	 * @return the nom
+	 */
+	public String getNom() {
+		return nom;
+	}
+
+	/**
+	 * Setter de nom.
+	 * @param nom the nom to set
+	 */
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	
+	
+}

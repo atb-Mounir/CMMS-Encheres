@@ -1,0 +1,136 @@
+
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="org.encheres.bo.Categorie"%>
+<%@page import="org.encheres.bo.Article"%>
+<%@page import="org.encheres.bo.Enchere"%>
+<%@page import="java.util.Locale.Category"%>
+<%@ include file="../fragments/head.jsp"%>
+
+
+<body>
+	<div class="container-fluid">
+		<%@ include file="../fragments/nav.jsp"%>
+
+			<div class="container" >
+				<h1 style="text-align: center">Nouvelle vente</h1>
+
+					<form action="${pageContext.request.contextPath}/NouvelleVente"
+						method="post" class="border border-light p-5">
+						<!--NOM DE l'ARTICLE -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 col-sm-3">
+								<label for="article" class="col-sm col-form-label" style="">Article :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<input type="text" name="nomArticle" class="form-control" id="article" placeholder="Nom de l'article" required value="${article.nomArticle}">
+							</div>
+						</div>
+						<!--DESCRIPTION DE l'ARTICLE -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 justify-content-center col-sm-3">
+								<label for="description" class="col-sm col-form-label" style="">Description :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<textarea type="text-area" name="description" rows="6"  class="form-control" id="description" placeholder="Description de l'article" value="${article.description}" style=""></textarea>
+							</div>
+						</div>
+						<!--CHOIX DES CATEGORIES -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6  col-sm-3">
+								<label for="categorie" class="col-sm col-form-label" style="" value="${article.categorie.libelleCategorie}">Categories :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<select name="categorie" id="categorie" class="form-control">
+									<c:forEach items="${categories}" var="categorie">
+									<option value="${ categorie.noCategorie }">${categorie.libelleCategorie}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+						<!--UPLOAD -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 justify-content-center col-sm-3">
+								<label for="upload" class="col-sm col-form-label" style="">Photo de l'article :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<input type="file" name="upload" class="form-control-file" id="upload">
+							</div>
+						</div>
+						<!--MISE A PRIX -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 col-sm-3">
+								<label for="miseAprix" class="col-sm col-form-label" style="">Mise a prix :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<input type="number" name="miseAPrix" class="btn btn-outline-*" min="0" max="2000" step="10" id="miseAprix" value="${article.miseAPrix}" style="border:1px solid darkgrey;">
+							</div>
+						</div>
+						<!--DEBUT DE l'ENCHERE -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 col-sm-3">
+								<label for="debutEnchere" class="col-sm col-form-label" style="">Debut de l'enchere :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<input type="date" name="dateDebutEnchere" class="btn btn-outline-*" name="miseAPrix" id="debutEnchere" value="${article.dateDebutEncheres}" style="border:1px solid darkgrey;">
+							</div>
+						</div>
+						<!--FIN DE l'ENCHERE -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-6 col-sm-3">
+								<label for="finEnchere" class="col-sm col-form-label" value="${article.dateFinEncheres}" style="">Fin de l'enchere :</label>
+							</div>
+							<div class="col-xs-6 col-sm-5">
+								<input type="date" name="dateFinEnchere" class="btn btn-outline-*" name="finEnchere" id="finEnchere" style="border:1px solid darkgrey;">
+							</div>
+						</div>
+						<!--ADRESSE DU RETRAIT -->
+						<div class="form-group row justify-content-center">
+							<div class="col-xs-8 col-sm-8">
+								<fieldset for="Retrait" class="col-sm " style="border:1px solid darkgrey; border-radius: 5px">
+									<legend style="text-align: center; font-weight:bold">Retrait</legend>
+										<label  class="col-sm">Rue :</label>
+										<input name="retraitRue" class="col-sm" type="text" name="retraitRue" value="${retrait.rueRetrait}">
+										<label class="col-auto" style="margin-top: 10px">Code Postal :</label>
+										<input name="retraitCP" class="col-sm" type="text" name="retraitCP" value="${retrait.cpRetrait}">
+										<label class="col-sm" style="margin-top: 10px">Ville :</label>
+										<input name="retraitVille" class="col-sm" type="text" name="retraitVille" value="${retrait.villeRetrait}" style="margin-bottom: 20px">
+								</fieldset>
+							</div>
+						</div>
+						<!--BOUTONS SUBMIT DU FORM -->
+						<div class="row justify-content-center">
+							<div class="col-8 col-xs-auto justify-content-center">
+								<input type="submit" name="enregistrer" value="Enregistrer"
+									class="btn btn-outline-info" style="float: left" onclick="AnnuleVenteFunction()">
+								<input type="submit" name="annuler" value="Annuler"
+									class="btn btn-outline-info" style="margin-left: 1em; ">
+								<input type="submit" name="annulerVente" value="Annuler Vente"
+										class="btn btn-outline-info" id="annulerVente"   style="float: right;">
+							</div>
+						</div>
+					</form>
+			</div>
+			
+<!-- <script type="text/javascript" charset="UTF-8">
+	function AnnuleVenteFunction() {
+		document.getElementById("annulerVente").disabled = false;
+		}
+</script> -->			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		<%@ include file="../fragments/footer.jsp"%>
+		<%@ include file="../fragments/script.jsp"%>
+	</div>
+</body>
+</html>

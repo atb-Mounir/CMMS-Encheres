@@ -1,0 +1,22 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+import org.encheres.bo.Article;
+import org.encheres.dal.ArticleDAO;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 22 janv. 2020 - 14:24:09.
+ */
+public class ArticleManager implements ArticleBLL {
+		private ArticleDAO articleDAO;
+	public Article selectArticleById(String no_article){
+			return this.articleDAO.selectArticleById(no_article);
+	}
+	
+
+}

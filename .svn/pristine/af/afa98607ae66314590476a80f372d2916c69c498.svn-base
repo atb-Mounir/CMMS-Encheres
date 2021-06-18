@@ -1,0 +1,24 @@
+/**
+ * 
+ */
+package org.encheres.bll;
+
+import org.encheres.BusinessException;
+import org.encheres.bo.Utilisateur;;
+
+/**
+ * Classe en  charge de
+ * @author cmartin2
+ * @versionEncheresCMM - V1.0
+ * @date 22 janv. 2020 - 14:24:22.
+ */
+public class UtilisateurManager extends UtilisateurBLL {
+
+	public void creerUtilisateur() {
+		BusinessException businessException = new BusinessException();
+		Utilisateur utilisateur=new Utilisateur();
+		
+		
+	}
+	
+}

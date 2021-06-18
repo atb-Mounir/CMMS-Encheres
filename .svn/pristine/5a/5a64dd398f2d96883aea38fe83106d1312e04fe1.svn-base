@@ -1,0 +1,121 @@
+<%@ include file="../fragments/head.jsp" %>
+<%@ include file="../fragments/nav.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="C" %>
+
+<body>
+<div class="container">
+  <!-- Content here -->
+
+<div class="card-deck ">
+  <div class="card border-0">
+    <img class="card-img-top" src="${pageContext.request.contextPath}/img/chateau.jpg" alt="Card image cap">
+  </div>
+  <div class="card border-0">
+    <div class="card-body">
+      <h4 class="card-title">
+      
+      <!-- CONDITION POUR L AFFICHAGE DU GAGNANT A REALISER	-->
+      	${nomDuGagnantDesEncheres } a remporté l'enchère
+      </h4>
+      
+					<section class="card-text">
+					<div class="col align-self-center">
+					<form action="${pageContext.request.contextPath }/DetailVente" method="post">	
+						<table class="table ">
+							<thead>
+								
+								<tr>
+									<th scope="col" >
+									<label for="no_article" class="col-sm-4 col-form-label"></label>
+           							 <input type="hidden" id="no_article" name="no_article" maxlength="30" required value="${article.noArticle}">
+									${article.categorie.libelleCategorie},
+									
+									</th>
+									<th scope="col"
+										
+									>${article.nomArticle}</th>
+								</tr>
+							</thead>
+							<tbody class="w-100">
+								<tr>
+									<td>Description:</td>
+									<td>${article.description}</td>
+								</tr>
+								<tr>
+									<td>Meilleur offre:</td>
+									<c:if test="${article.enchere.montantEnchere==null}">	
+									<td>${article.enchere.montantEnchere} pts par ?</td>
+									</c:if>
+									<c:if test="${article.enchere.montantEnchere!=null}">	
+									<td>${article.enchere.montantEnchere} pts par ?</td>
+									</c:if>
+								</tr>
+								<tr>
+									<td>Mise à prix:</td>
+									<td>${article.miseAPrix}</td>
+								</tr>
+								<!-- ligne presente seulement dans la page detail vente	-->
+								<tr id="deitailVente">
+									<td>Fin de l'enchère:</td>
+									<td>${article.dateFinEncheres }</td>
+								</tr>
+								<tr>
+									<td>Retrait:</td>
+									<td>
+										${article.retrait.rueRetrait }
+										${article.retrait.cpRetrait}
+										${article.retrait.villeRetrait}
+									</td>
+								</tr>
+								<tr>
+									<td>Vendeur:</td>
+									<td >${article.utilisateur.nom}</td>
+								</tr>
+								<tr>
+									<td id="remporteVente">tel:</td>
+									<td>${article.utilisateur.telephone}</td>
+								</tr>
+								<tr>
+								<!-- ligne presente seulement dans la page detail vente	-->
+									<td id="deitailVente">Ma proposition:</td>
+									<td>${prixArticleEnCour }</td>
+										<td><div class="input-group mb-3">
+										<!-- Section formulaire pour rencherir qui renvoi en Post vers la servlet DetailVente	-->
+										
+												<input type="number" 
+												min="${meilleurOffre }"
+												max="${credit} "
+													name="montant_enchere"
+													required maxlength="4"
+														value="${enchere.montant_enchere }"
+												class="form-control"
+												placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+												<div class="input-group-append">
+												    <span class="input-group-text">${credit}</span>
+												<!-- bouton permettant de valider la surenchère-->
+													<button type="submit" class="btn btn-lg btn-danger" data-toggle="popover" title="OUPS !" 
+													data-content="Il semblerait que vous n'ayez pas assez de crédit ?">Enchérir</button>
+												</div>
+										
+											</div></td>
+									</tr>
+								<tr>
+									<td class="text-center" colspan="2"><a
+										class="justify-self-center btn btn-primary"
+										href="<%=request.getContextPath() %>/Accueil" role="button">Back</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						</form>
+					</div>
+					</section>
+				</div>
+  </div>
+</div>
+</div>	
+	
+	<%@ include file="../fragments/footer.jsp" %>
+	<%@ include file="../fragments/script.jsp" %>
+</body>
+</html>
